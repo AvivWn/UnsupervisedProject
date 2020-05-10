@@ -27,6 +27,7 @@ for column in wine_quality_df.columns:
         fig = sns.kdeplot(wine_quality_df.loc[wine_quality_df.loc[:, 'type'] == 'red', column], shade=True, color=color_by_cluster('red'), label='red')
         fig.figure.suptitle(column)
         plt.savefig(f'{figures_dir}dist_{column.replace(" ", "_")}.png')
+        plt.close()
         #plt.show()
 
 
@@ -34,6 +35,7 @@ palette = {1: color_by_cluster('white'), 0: color_by_cluster('red')}
 for index, column in np.ndenumerate(wine_quality_df.columns):
     sns.boxplot('type', column, data=wine_quality_df.replace({'red': 0, 'white':1}), palette=palette)
     plt.savefig(f'{figures_dir}boxplot_{column.replace(" ", "_")}.png')
+    plt.close()
     #plt.show()
 
 
@@ -179,11 +181,12 @@ plt.savefig(figures_dir + "gmm_find_best.png")
 
 print("\n\n-------------------------------------------------------------")
 print("K-means Algorithm:")
+# k-means intuition
 # Comparing the variance for the target clusters using ground truth
 X_red = wine_quality_df.loc[wine_quality_df['type'] == "red"].drop(['type', 'quality', 'alcohol', 'free sulfur dioxide'], axis=1)
 X_white = wine_quality_df.loc[wine_quality_df['type'] == "white"].drop(['type', 'quality', 'alcohol', 'free sulfur dioxide'], axis=1)
-X_red_scaled = StandardScaler().fit_transform(X_red)
-X_white_scaled = StandardScaler().fit_transform(X_white)
+X_red_scaled = X_scaled[list(X_red.index)]
+X_white_scaled = X_scaled[list(X_white.index)]
 
 X_red_variance = np.var(X_red_scaled, axis=0)
 X_white_variance = np.var(X_white_scaled, axis=0)
